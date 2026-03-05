@@ -5,9 +5,9 @@
 
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=23abdul23" alt="23abdul23" /></a> </p>
 
-- 🔭 I’m currently working on [M_CIR](https://github.com/23abdul23/M_CIR)
+- 🔭 I’m currently working on [SnapMap](github.com/opencodeiiita/snapmap)
 
-- 👯 I’m looking to collaborate on [Aziz](https://github.com/23abdul23/Aziz/tree/master)
+- 👯 I’m looking to collaborate on [Aegis](https://github.com/23abdul23/Aegis)
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
