@@ -26,6 +26,33 @@
 
 ---
 
+### 📊 Live Stats
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>20 Jun 2026, 09:42 UTC</b></sub>
+
+<br/>
+
+| 🔥 Current Streak | ⚡ Longest Streak | 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
+|:-:|:-:|:-:|:-:|:-:|
+| **1 days** | **46 days** | **1,031** | **123** | **107** |
+
+<br/>
+
+**🧩 LeetCode &nbsp;·&nbsp; 390 problems solved**
+
+<br/>
+
+**📝 Top Languages**
+
+<table>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/58/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>58.1%</code></td></tr>
+<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/22/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>22.2%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>7.5%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.6%</code></td></tr>
+<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/4/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>4.2%</code></td></tr>
+</table>
+
+---
+
 ### 🛠 Skills
 
 ```
@@ -47,15 +74,3 @@ Core CS        DSA  OOP  OS  DBMS  System Design  Microservices
 - 🏅 **Top 20 Finalist** at Educathon 2.0 (National Hackathon) among 300+ teams
 - 🔀 **3 PRs merged** into [drawpyo](https://github.com/MrYsLab/drawpyo) open-source Python library
 - 🤝 Mentored **110+ students** in open-source contribution via FOSS Wing, Geekhaven
-
----
-
-### 📊 GitHub Stats
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=23abdul23&show_icons=true&theme=default&hide_border=true" width="48%"/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=23abdul23&layout=compact&hide_border=true" width="38%"/>
-</p>
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=23abdul23&hide_border=true" width="48%"/>
-</p>
