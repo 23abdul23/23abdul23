@@ -27,7 +27,7 @@
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>20 Jun 2026, 09:42 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>21 Jun 2026, 04:04 UTC</b></sub>
 
 <br/>
 
@@ -44,10 +44,10 @@
 **📝 Top Languages**
 
 <table>
-<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/58/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>58.1%</code></td></tr>
-<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/22/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>22.2%</code></td></tr>
-<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>7.5%</code></td></tr>
-<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.6%</code></td></tr>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/58/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>58.3%</code></td></tr>
+<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/22/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>22.3%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>7.3%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.7%</code></td></tr>
 <tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/4/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>4.2%</code></td></tr>
 </table>
 
