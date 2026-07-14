@@ -21,19 +21,35 @@
 
 | Project | What it does | Stack |
 |---|---|---|
-| **TBEP V2** | AI platform for biomedical researchers to explore multi-omics datasets and knowledge graphs via natural language | FastAPI · Neo4j · LLM Agents · RAG |
+| [**TBEP V2**](https://github.com/23abdul23) | AI platform for biomedical researchers to explore multi-omics datasets and knowledge graphs via natural language | FastAPI · Neo4j · LLM Agents · RAG |
 | [**Aegis ID**](https://github.com/23abdul23/Aegis) | Mobile-first campus management: identity, access control, geofenced authorization, async notifications | Node.js · PostgreSQL · Redis · Docker · AWS |
 
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>14 Jul 2026, 02:22 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>14 Jul 2026, 05:45 UTC</b></sub>
 
 <br/>
 
-| 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
-|:-:|:-:|:-:|
-| **1,351** | **134** | **222** |
+| 🔥 Current Streak | ⚡ Longest Streak | 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
+|:-:|:-:|:-:|:-:|:-:|
+| **1 days** | **46 days** | **1,352** | **134** | **222** |
+
+<br/>
+
+**🧩 LeetCode &nbsp;·&nbsp; 390 problems solved**
+
+<br/>
+
+**📝 Top Languages**
+
+<table>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/54/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>54.9%</code></td></tr>
+<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/15/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>15.9%</code></td></tr>
+<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/15/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>15.2%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>6.6%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.3%</code></td></tr>
+</table>
 
 ---
 
@@ -54,7 +70,7 @@ Core CS        DSA  OOP  OS  DBMS  System Design  Microservices
 ### 🏆 Achievements
 
 - 🥇 **AIR 5555** in JEE Main 2024 — Top 0.341% nationally
-- 💻 **400+ LeetCode** problems solved · Max Rating: 1585
+- 💻 **390+ LeetCode** problems solved · Max Rating: 1585
 - 🏅 **Top 20 Finalist** at Educathon 2.0 (National Hackathon) among 300+ teams
 - 🔀 **3 PRs merged** into [drawpyo](https://github.com/MrYsLab/drawpyo) open-source Python library
 - 🤝 Mentored **110+ students** in open-source contribution via FOSS Wing, Geekhaven
