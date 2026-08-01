@@ -27,7 +27,7 @@
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>31 Jul 2026, 02:39 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>01 Aug 2026, 02:37 UTC</b></sub>
 
 <br/>
 
@@ -44,11 +44,11 @@
 **📝 Top Languages**
 
 <table>
-<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/54/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>54.9%</code></td></tr>
-<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/15/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>15.9%</code></td></tr>
-<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/15/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>15.2%</code></td></tr>
-<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>6.6%</code></td></tr>
-<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.3%</code></td></tr>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/54/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>54.0%</code></td></tr>
+<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/16/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>16.7%</code></td></tr>
+<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/15/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>15.6%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>6.4%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.2%</code></td></tr>
 </table>
 
 ---
