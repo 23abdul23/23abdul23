@@ -27,7 +27,7 @@
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>16 Aug 2026, 01:10 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>17 Aug 2026, 01:08 UTC</b></sub>
 
 <br/>
 
@@ -48,7 +48,7 @@
 <tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/18/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>18.7%</code></td></tr>
 <tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/14/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>14.7%</code></td></tr>
 <tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>6.5%</code></td></tr>
-<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.0%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.1%</code></td></tr>
 </table>
 
 ---
