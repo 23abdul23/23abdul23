@@ -27,13 +27,13 @@
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>26 Aug 2026, 01:10 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>27 Aug 2026, 07:21 UTC</b></sub>
 
 <br/>
 
 | 🔥 Current Streak | ⚡ Longest Streak | 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
 |:-:|:-:|:-:|:-:|:-:|
-| **0 days** | **46 days** | **1,419** | **134** | **223** |
+| **0 days** | **46 days** | **1,142** | **123** | **107** |
 
 <br/>
 
@@ -44,11 +44,11 @@
 **📝 Top Languages**
 
 <table>
-<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/52/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>52.1%</code></td></tr>
-<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/18/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>18.8%</code></td></tr>
-<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/14/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>14.5%</code></td></tr>
-<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>7.2%</code></td></tr>
-<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.0%</code></td></tr>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/56/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>56.3%</code></td></tr>
+<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/20/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>20.3%</code></td></tr>
+<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>7.9%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>7.8%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.4%</code></td></tr>
 </table>
 
 ---
