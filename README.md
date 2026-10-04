@@ -27,13 +27,13 @@
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>03 Oct 2026, 03:50 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>04 Oct 2026, 04:21 UTC</b></sub>
 
 <br/>
 
 | 🔥 Current Streak | ⚡ Longest Streak | 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
 |:-:|:-:|:-:|:-:|:-:|
-| **1 days** | **46 days** | **1,182** | **123** | **107** |
+| **2 days** | **46 days** | **1,182** | **124** | **107** |
 
 <br/>
 
@@ -44,11 +44,11 @@
 **📝 Top Languages**
 
 <table>
-<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/60/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>60.1%</code></td></tr>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/59/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>59.9%</code></td></tr>
 <tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/21/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>21.8%</code></td></tr>
 <tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>6.8%</code></td></tr>
-<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.8%</code></td></tr>
-<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/3/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>3.9%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.7%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/4/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>4.1%</code></td></tr>
 </table>
 
 ---
