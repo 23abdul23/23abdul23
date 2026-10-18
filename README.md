@@ -27,13 +27,13 @@
 ---
 
 ### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>17 Oct 2026, 03:02 UTC</b></sub>
+<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>18 Oct 2026, 03:04 UTC</b></sub>
 
 <br/>
 
 | 🔥 Current Streak | ⚡ Longest Streak | 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
 |:-:|:-:|:-:|:-:|:-:|
-| **1 days** | **46 days** | **1,204** | **128** | **108** |
+| **1 days** | **46 days** | **1,217** | **128** | **108** |
 
 <br/>
 
@@ -44,11 +44,11 @@
 **📝 Top Languages**
 
 <table>
-<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/59/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>59.3%</code></td></tr>
-<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/20/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>20.7%</code></td></tr>
-<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>6.6%</code></td></tr>
-<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>6.2%</code></td></tr>
-<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.7%</code></td></tr>
+<tr><td align="right" width="130"><b>HTML</b></td><td width="220"><img src="https://progress-bar.xyz/58/?width=200&color=e34c26&bg=e0e0e0" height="12"/></td><td><code>58.4%</code></td></tr>
+<tr><td align="right" width="130"><b>TypeScript</b></td><td width="220"><img src="https://progress-bar.xyz/20/?width=200&color=3178c6&bg=e0e0e0" height="12"/></td><td><code>20.3%</code></td></tr>
+<tr><td align="right" width="130"><b>Python</b></td><td width="220"><img src="https://progress-bar.xyz/7/?width=200&color=3572A5&bg=e0e0e0" height="12"/></td><td><code>7.8%</code></td></tr>
+<tr><td align="right" width="130"><b>JavaScript</b></td><td width="220"><img src="https://progress-bar.xyz/6/?width=200&color=f1e05a&bg=e0e0e0" height="12"/></td><td><code>6.1%</code></td></tr>
+<tr><td align="right" width="130"><b>Jupyter Notebook</b></td><td width="220"><img src="https://progress-bar.xyz/5/?width=200&color=DA5B0B&bg=e0e0e0" height="12"/></td><td><code>5.6%</code></td></tr>
 </table>
 
 ---
