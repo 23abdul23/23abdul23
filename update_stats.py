@@ -1,5 +1,8 @@
-import os, requests
+import os
+import requests
 from datetime import datetime, timezone, timedelta
+
+import cards
 
 GITHUB_TOKEN = os.environ.get("GH_TOKEN", "")
 GITHUB_USERNAME = "23abdul23"
@@ -7,36 +10,33 @@ LEETCODE_USERNAME = "abdulazeem23"
 
 if not GITHUB_TOKEN:
     raise RuntimeError("GH_TOKEN environment variable is not set or is empty.")
-print(f"Token loaded: {'*' * (len(GITHUB_TOKEN) - 4)}{GITHUB_TOKEN[-4:]}")
 
 GH_HEADERS = {
     "Authorization": f"bearer {GITHUB_TOKEN}",
     "Content-Type": "application/json",
 }
 
-# ── 1. GitHub base stats (PRs, Issues, Languages) ────────────────────────────
+# ── GitHub queries ────────────────────────────────────────────────────────────
 
+# Languages come from repos the user owns and did not fork; forks and
+# collaborator repos used to skew the percentages (e.g. HTML at 58%).
 BASE_QUERY = """
 query($login: String!) {
   user(login: $login) {
-    pullRequests(states: [MERGED, OPEN, CLOSED]) { totalCount }
+    createdAt
+    pullRequests { totalCount }
     issues { totalCount }
-    topRepositories(first: 20, orderBy: {field: UPDATED_AT, direction: DESC}) {
+    repositories(first: 100, ownerAffiliations: OWNER, isFork: false,
+                 orderBy: {field: PUSHED_AT, direction: DESC}) {
       nodes {
-        languages(first: 5, orderBy: {field: SIZE, direction: DESC}) {
-          edges {
-            size
-            node { name }
-          }
+        languages(first: 8, orderBy: {field: SIZE, direction: DESC}) {
+          edges { size node { name } }
         }
       }
     }
   }
 }
 """
-
-# ── 2. Per-year contribution query ────────────────────────────────────────────
-# contributionsCollection requires explicit from/to to cover all years
 
 YEAR_QUERY = """
 query($login: String!, $from: DateTime!, $to: DateTime!) {
@@ -44,23 +44,20 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
     contributionsCollection(from: $from, to: $to) {
       totalCommitContributions
       contributionCalendar {
-        weeks {
-          contributionDays {
-            date
-            contributionCount
-          }
-        }
+        weeks { contributionDays { date contributionCount } }
       }
     }
   }
 }
 """
 
+
 def gql(query, variables):
     r = requests.post(
         "https://api.github.com/graphql",
         headers=GH_HEADERS,
         json={"query": query, "variables": variables},
+        timeout=30,
     )
     if not r.ok:
         print(f"GitHub API error {r.status_code}: {r.text[:400]}")
@@ -70,267 +67,209 @@ def gql(query, variables):
         raise Exception(f"GraphQL errors: {data['errors']}")
     return data["data"]
 
-def fetch_github_base():
-    data = gql(BASE_QUERY, {"login": GITHUB_USERNAME})
-    return data["user"]
 
-def fetch_all_years():
-    """Fetch contribution data year by year from account creation (2024) to now."""
+def fetch_all_years(created_at):
+    """Walk every year from account creation (not a hardcoded year) to today."""
     now = datetime.now(timezone.utc)
-    # Abdul joined July 2024, so collect 2024, 2025, 2026
-    start_year = 2024
-    current_year = now.year
-
-    all_days = []
-    total_commits = 0
-
-    for year in range(start_year, current_year + 1):
+    start_year = int(created_at[:4])
+    all_days, total_commits = {}, 0
+    for year in range(start_year, now.year + 1):
         from_dt = f"{year}-01-01T00:00:00Z"
-        to_dt   = f"{year}-12-31T23:59:59Z" if year < current_year else now.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        print(f"  Fetching contributions for {year}...")
+        to_dt = f"{year}-12-31T23:59:59Z" if year < now.year else now.strftime("%Y-%m-%dT%H:%M:%SZ")
         data = gql(YEAR_QUERY, {"login": GITHUB_USERNAME, "from": from_dt, "to": to_dt})
         cc = data["user"]["contributionsCollection"]
         total_commits += cc["totalCommitContributions"]
-
         for week in cc["contributionCalendar"]["weeks"]:
             for day in week["contributionDays"]:
-                all_days.append((day["date"], day["contributionCount"]))
+                all_days[day["date"]] = day["contributionCount"]
+    return total_commits, sorted(all_days.items())
 
-    return total_commits, all_days
 
-def calc_streak(all_days):
-    days = sorted(set(all_days), key=lambda x: x[0])  # dedupe + sort by date
-    today     = datetime.now(timezone.utc).date()
-    today_str = today.isoformat()
-    yesterday_str = (today - timedelta(days=1)).isoformat()
-
-    day_map = {d: c for d, c in days}
-
-    # Current streak: walk back from today (allow today to be 0 if not yet contributed)
+def calc_streak(days):
+    day_map = dict(days)
+    today = datetime.now(timezone.utc).date()
+    check = today if day_map.get(today.isoformat(), 0) > 0 else today - timedelta(days=1)
     current = 0
-    check = today
-    # if today has 0 contributions, start checking from yesterday
-    if day_map.get(today_str, 0) == 0:
-        check = today - timedelta(days=1)
-    while True:
-        s = check.isoformat()
-        if day_map.get(s, 0) > 0:
-            current += 1
-            check -= timedelta(days=1)
-        else:
-            break
-
-    # Longest streak across all days
-    longest = 0
-    run = 0
+    while day_map.get(check.isoformat(), 0) > 0:
+        current += 1
+        check -= timedelta(days=1)
+    longest = run = 0
     for _, count in days:
-        if count > 0:
-            run += 1
-            longest = max(longest, run)
-        else:
-            run = 0
-
+        run = run + 1 if count > 0 else 0
+        longest = max(longest, run)
     return current, longest
 
-def calc_languages(user):
-    lang_sizes = {}
-    for repo in user["topRepositories"]["nodes"]:
-        for edge in repo["languages"]["edges"]:
-            name = edge["node"]["name"]
-            lang_sizes[name] = lang_sizes.get(name, 0) + edge["size"]
-    total = sum(lang_sizes.values()) or 1
-    sorted_langs = sorted(lang_sizes.items(), key=lambda x: x[1], reverse=True)[:5]
-    return [(name, round(size * 100 / total, 1)) for name, size in sorted_langs]
 
-# ── 3. LeetCode stats ─────────────────────────────────────────────────────────
+def calc_languages(user):
+    sizes = {}
+    for repo in user["repositories"]["nodes"]:
+        for edge in repo["languages"]["edges"]:
+            sizes[edge["node"]["name"]] = sizes.get(edge["node"]["name"], 0) + edge["size"]
+    total = sum(sizes.values()) or 1
+    top = sorted(sizes.items(), key=lambda x: x[1], reverse=True)[:5]
+    return [(n, round(s * 100 / total, 1)) for n, s in top]
+
+
+# ── LeetCode ──────────────────────────────────────────────────────────────────
+
+LC_QUERY = """
+query($username: String!) {
+  matchedUser(username: $username) {
+    submitStatsGlobal { acSubmissionNum { difficulty count } }
+  }
+  userContestRanking(username: $username) { rating topPercentage }
+  userContestRankingHistory(username: $username) { attended rating }
+}
+"""
+
 
 def fetch_leetcode():
-    query = """
-    query($username: String!) {
-      matchedUser(username: $username) {
-        submitStatsGlobal {
-          acSubmissionNum { difficulty count }
-        }
-      }
-    }
-    """
     r = requests.post(
         "https://leetcode.com/graphql",
-        json={"query": query, "variables": {"username": LEETCODE_USERNAME}},
+        json={"query": LC_QUERY, "variables": {"username": LEETCODE_USERNAME}},
         headers={"Content-Type": "application/json", "Referer": "https://leetcode.com"},
-        timeout=10,
+        timeout=15,
     )
     r.raise_for_status()
-    data = r.json()
-    stats = data["data"]["matchedUser"]["submitStatsGlobal"]["acSubmissionNum"]
-    counts = {s["difficulty"]: s["count"] for s in stats}
+    data = r.json()["data"]
+    counts = {s["difficulty"]: s["count"] for s in data["matchedUser"]["submitStatsGlobal"]["acSubmissionNum"]}
+    hist = [h["rating"] for h in (data.get("userContestRankingHistory") or []) if h.get("attended")]
+    ranking = data.get("userContestRanking") or {}
+    max_rating = int(max(hist)) if hist else int(ranking.get("rating") or 0)
+    top = ranking.get("topPercentage")
     return (
-        counts.get("All", 0),
-        counts.get("Easy", 0),
-        counts.get("Medium", 0),
-        counts.get("Hard", 0),
+        (counts.get("All", 0), counts.get("Easy", 0), counts.get("Medium", 0), counts.get("Hard", 0)),
+        max_rating,
+        round(top) if top else None,
     )
 
-# ── 4. Build language bar (HTML table for visual progress bars) ───────────────
 
-LANG_COLORS = {
-    "TypeScript":       "#3178c6",
-    "JavaScript":       "#f1e05a",
-    "Python":           "#3572A5",
-    "HTML":             "#e34c26",
-    "CSS":              "#563d7c",
-    "Java":             "#b07219",
-    "C++":              "#f34b7d",
-    "Shell":            "#89e051",
-    "Jupyter Notebook": "#DA5B0B",
-    "Go":               "#00ADD8",
-    "Rust":             "#dea584",
-}
+# ── Static profile content (from the Figma design) ────────────────────────────
 
-def lang_table(langs):
-    rows = ""
-    for name, pct in langs:
-        color = LANG_COLORS.get(name, "#888888")
-        bar_fill = int(pct * 2)   # max ~200px wide bar
-        rows += (
-            f'<tr>'
-            f'<td align="right" width="130"><b>{name}</b></td>'
-            f'<td width="220">'
-            f'<img src="https://progress-bar.xyz/{int(pct)}/?width=200&color={color[1:]}&bg=e0e0e0" height="12"/>'
-            f'</td>'
-            f'<td><code>{pct}%</code></td>'
-            f'</tr>\n'
-        )
-    return f'<table>\n{rows}</table>'
+INTERN = dict(
+    badge="ENTERPRISE PRODUCTION", meta="Crecientech", title="Software Engineer Intern ",
+    title2="@ Crecientech",
+    desc="Architecting low-latency backend microservices and deterministic AI inference engines. "
+         "Orchestrating multi-hop LLM agent workflows, vector embeddings and graph-aware RAG pipelines "
+         "using knowledge graph reasoning.",
+    style="grid",
+    metrics=[("Query Latency", "~42ms", cards.GREEN), ("Tool Calling Accuracy", "99.4%", cards.CYAN),
+             ("Data Throughput", "1.4M+", cards.TEXT)],
+    sub=["p95 Neo4j traversal", "Structured schemas", "Records indexed"],
+    chips=["FastAPI", "Neo4j (Cypher)", "PostgreSQL", "LangChain", "Qdrant Vector DB"],
+)
+AEGIS = dict(
+    badge="FLAGSHIP DEPLOYMENT", meta="IIIT-A Ecosystem", title="Aegis ID ", title2="· Campus OS",
+    desc="Institutional-grade attendance and identity platform handling concurrent peak loads. "
+         "Powers geofencing and batch verification across 2,000+ campus users.",
+    style="rows",
+    metrics=[("Active Userbase", "2,000+ Students & Faculty", cards.TEXT),
+             ("Async Job Queue (BullMQ)", "Zero Dropped Signals", cards.GREEN)],
+    chips=["Node.js", "Redis", "BullMQ", "AWS EC2 / S3"],
+)
+ARCH = [
+    dict(sys="SYSTEM // 001", tag="v2.1-prod", accent=cards.CYAN,
+         title=["TBEP V2: Knowledge Graph", "Agent Platform"],
+         desc="Biomedical literature extraction and reasoning engine using deterministic tool-calling LLM "
+              "agents with Neo4j entity graphs. Bridges vector semantic search with graph traversals for "
+              "hallucination-resistant querying.",
+         flow_label="// TOPOLOGICAL EXECUTION PIPELINE",
+         flow=[("1. Query Parsing", "Pydantic Schema", cards.CYAN), ("2. Graph Agent", "Neo4j Cypher Path", cards.GREEN),
+               ("3. Synthesis", "Deterministic Stream", "#d0bcff")],
+         bullets=["Autonomous multi-step tool execution with strict JSON parameter validation.",
+                  "Sub-50ms relation lookup across 400,000+ biological node clusters."],
+         chips=["FastAPI", "Neo4j", "LangChain", "Docker Compose"]),
+    dict(sys="SYSTEM // 002", tag="Live Production", accent=cards.GREEN,
+         title=["Aegis ID: High-Concurrency", "Identity Bus"],
+         desc="Decoupled event-driven identity verification system built for unreliable campus networks. "
+              "Uses Redis-backed BullMQ job pipelines and geofenced, time-based dynamic tokens.",
+         flow_label="// HIGH-LOAD INGESTION MESH",
+         flow=[("1. Geofence", "Haversine Sync", cards.GREEN), ("2. BullMQ", "Redis FIFO Bus", cards.CYAN),
+               ("3. Persistence", "PostgreSQL Pool", cards.TEXT)],
+         bullets=["Absorbs 500+ requests/second during synchronous 9 AM class roll calls.",
+                  "Fault-tolerant retry queue prevents dropped packets during unstable mobile network transitions."],
+         chips=["Redis", "BullMQ", "Node.js", "AWS S3"]),
+]
+SKILLS = [
+    ("Languages", cards.CYAN, ["C++ (STL)", "Python", "TypeScript", "Java", "SQL"]),
+    ("Backend", cards.GREEN, ["FastAPI", "Node.js", "Express", "RESTful API", "JWT / OAuth"]),
+    ("Databases", cards.PURPLE, ["PostgreSQL", "Neo4j", "Redis", "MongoDB", "Qdrant"]),
+    ("AI & Reasoning", cards.CYAN, ["LLM Agents", "Tool Calling", "Advanced RAG", "Knowledge Graph", "LangChain"]),
+    ("Cloud & DevOps", cards.GREEN, ["Docker", "AWS (EC2/S3)", "GCP", "GitHub Actions", "Linux CLI"]),
+]
 
-# ── 5. Build README ───────────────────────────────────────────────────────────
 
-def build_readme(gh_base, total_commits, current_streak, longest_streak,
-                 lc_total, lc_easy, lc_med, lc_hard, langs):
+def achievements(lc_total):
+    return [
+        ("JEE Main 2024", "AIR 5555", "Top 0.341% among 1.4M+ candidates nationally.", cards.CYAN),
+        ("Educathon 2.0", "Top 20 Finalist", "Selected among 300+ national teams for automated educational tooling.", cards.GREEN),
+        ("drawpyo (Python FOSS)", "3 PRs Merged", "Diagram object inheritance and schema generation work merged upstream.", cards.PURPLE),
+        ("GeekHaven IIIT-A", "110+ Mentored", "Open-source workshops on Git workflows and Linux systems.", cards.CYAN),
+    ]
 
-    total_prs    = gh_base["pullRequests"]["totalCount"]
-    total_issues = gh_base["issues"]["totalCount"]
-    updated      = datetime.now(timezone.utc).strftime("%d %b %Y, %H:%M UTC")
 
-    # LeetCode breakdown — only show if non-zero
-    lc_breakdown = ""
-    if lc_easy + lc_med + lc_hard > 0:
-        lc_breakdown = f"""&nbsp;&nbsp;✅ Easy **{lc_easy}** &nbsp;·&nbsp; 🟡 Medium **{lc_med}** &nbsp;·&nbsp; 🔴 Hard **{lc_hard}**"""
+def build_readme(prs, issues, updated):
+    return f"""<div align="center">
 
-    lang_html = lang_table(langs)
+![Hero](assets/hero.svg)
 
-    readme = f"""<h1 align="center">Abdul Azeem Ansari</h1>
-<h3 align="center">Backend & AI Systems Engineer · B.Tech IT @ IIIT Allahabad</h3>
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0e1420?style=flat&logo=linkedin&logoColor=4cd7f6)](https://linkedin.com/in/abdulazeemansari)
+[![LeetCode](https://img.shields.io/badge/LeetCode-0e1420?style=flat&logo=leetcode&logoColor=4cd7f6)](https://www.leetcode.com/abdulazeem23)
+[![Codeforces](https://img.shields.io/badge/Codeforces-0e1420?style=flat&logo=codeforces&logoColor=4cd7f6)](https://codeforces.com/profile/abdulazeem23)
+![Views](https://komarev.com/ghpvc/?username=23abdul23&style=flat&color=4cd7f6&label=profile+views)
 
-<p align="center">
-  <a href="https://linkedin.com/in/abdulazeemansari"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white"/></a>
-  <a href="https://www.leetcode.com/abdulazeem23"><img src="https://img.shields.io/badge/LeetCode-FFA116?style=flat&logo=leetcode&logoColor=white"/></a>
-  <a href="https://codeforces.com/profile/abdulazeem23"><img src="https://img.shields.io/badge/Codeforces-1F8ACB?style=flat&logo=codeforces&logoColor=white"/></a>
-  <img src="https://komarev.com/ghpvc/?username=23abdul23&style=flat&color=0e75b6"/>
-</p>
+</div>
 
----
+![Focus](assets/focus.svg)
 
-### 🔧 What I'm Building
+![Telemetry](assets/telemetry.svg)
 
-- **@ Crecientech (SDE Intern)** — Scalable backend services, LLM agents, RAG pipelines, and graph-aware reasoning systems for AI-powered biomedical research (FastAPI · Neo4j · PostgreSQL)
-- **Aegis ID** — Campus management platform for 2,000+ users: identity, access control, movement tracking, and emergency response (Node.js · Redis · BullMQ · AWS)
+<sub>Auto-updated daily via GitHub Actions · Last updated: <b>{updated}</b> · {prs:,} pull requests · {issues:,} issues</sub>
 
----
+![Architecture](assets/arch.svg)
 
-### 🚀 Featured Projects
+![Skills](assets/skills.svg)
 
-| Project | What it does | Stack |
-|---|---|---|
-| [**TBEP V2**](https://github.com/23abdul23) | AI platform for biomedical researchers to explore multi-omics datasets and knowledge graphs via natural language | FastAPI · Neo4j · LLM Agents · RAG |
-| [**Aegis ID**](https://github.com/23abdul23/Aegis) | Mobile-first campus management: identity, access control, geofenced authorization, async notifications | Node.js · PostgreSQL · Redis · Docker · AWS |
-
----
-
-### 📊 Live Stats
-<sub>🔄 Auto-updated daily via GitHub Actions &nbsp;·&nbsp; Last updated: <b>{updated}</b></sub>
-
-<br/>
-
-| 🔥 Current Streak | ⚡ Longest Streak | 💻 Total Commits | 🔀 Pull Requests | 🐛 Issues |
-|:-:|:-:|:-:|:-:|:-:|
-| **{current_streak} days** | **{longest_streak} days** | **{total_commits:,}** | **{total_prs:,}** | **{total_issues:,}** |
-
-<br/>
-
-**🧩 LeetCode &nbsp;·&nbsp; {lc_total} problems solved**{"  " + lc_breakdown if lc_breakdown else ""}
-
-<br/>
-
-**📝 Top Languages**
-
-{lang_html}
-
----
-
-### 🛠 Skills
-
-```
-Languages      C++  Python  TypeScript  JavaScript  Java  Bash
-Backend        Node.js  Express.js  FastAPI  REST APIs  JWT  Prisma
-Databases      PostgreSQL  MongoDB  Neo4j  MySQL
-AI Systems     LLM Agents  Tool Calling  RAG  Knowledge Graphs
-Cloud/DevOps   AWS  GCP  Docker  Nginx  GitHub Actions  CI/CD
-Distributed    Redis  BullMQ  Async Processing  Concurrency
-Core CS        DSA  OOP  OS  DBMS  System Design  Microservices
-```
-
----
-
-### 🏆 Achievements
-
-- 🥇 **AIR 5555** in JEE Main 2024 — Top 0.341% nationally
-- 💻 **{lc_total}+ LeetCode** problems solved · Max Rating: 1585
-- 🏅 **Top 20 Finalist** at Educathon 2.0 (National Hackathon) among 300+ teams
-- 🔀 **3 PRs merged** into [drawpyo](https://github.com/MrYsLab/drawpyo) open-source Python library
-- 🤝 Mentored **110+ students** in open-source contribution via FOSS Wing, Geekhaven
+![Achievements](assets/achievements.svg)
 """
-    return readme
 
-# ── 6. Main ───────────────────────────────────────────────────────────────────
 
 def main():
-    print("Fetching GitHub base stats...")
-    gh_base = fetch_github_base()
-
-    print("Fetching all-time contributions (year by year)...")
-    total_commits, all_days = fetch_all_years()
-
-    print("Calculating streak from full history...")
-    current_streak, longest_streak = calc_streak(all_days)
-
-    print("Calculating top languages...")
-    langs = calc_languages(gh_base)
-
-    print("Fetching LeetCode stats...")
+    os.makedirs("assets", exist_ok=True)
+    base = gql(BASE_QUERY, {"login": GITHUB_USERNAME})["user"]
+    commits, days = fetch_all_years(base["createdAt"])
+    cur, longest = calc_streak(days)
+    langs = calc_languages(base)
     try:
-        lc_total, lc_easy, lc_med, lc_hard = fetch_leetcode()
+        lc, rating, top = fetch_leetcode()
     except Exception as e:
-        print(f"LeetCode fetch failed ({e}), using last known values")
-        lc_total, lc_easy, lc_med, lc_hard = 390, 0, 0, 0
+        print(f"LeetCode fetch failed ({e}); keeping previous LeetCode card")
+        lc, rating, top = None, None, None
 
-    print(f"\n✓ Total commits (all time): {total_commits:,}")
-    print(f"✓ Current streak: {current_streak} days")
-    print(f"✓ Longest streak: {longest_streak} days")
-    print(f"✓ PRs: {gh_base['pullRequests']['totalCount']}  Issues: {gh_base['issues']['totalCount']}")
-    print(f"✓ LeetCode: {lc_total} solved (E:{lc_easy} M:{lc_med} H:{lc_hard})")
-    print(f"✓ Top langs: {[l[0] for l in langs]}")
+    now = datetime.now(timezone.utc)
+    updated = now.strftime("%d %b %Y, %H:%M UTC")
+    out = {
+        "hero.svg": cards.hero("@23abdul23", "Abdul Azeem Ansari", "Backend & AI Systems Engineer",
+                               "B.Tech IT @ IIIT Allahabad", "Shit happens, Keep pushing",
+                               "Prayagraj, IN (UTC +05:30)", "Available for Backend & AI Infrastructure Roles"),
+        "focus.svg": cards.focus(f"ACTIVE · {now.strftime('%b %Y').upper()}", INTERN, AEGIS),
+        "arch.svg": cards.arch(ARCH),
+        "skills.svg": cards.skills(SKILLS),
+    }
+    out["achievements.svg"] = cards.achievements(achievements(lc[0] if lc else 0))
+    if lc:
+        out["telemetry.svg"] = cards.telemetry(days, commits, cur, longest, langs, lc, rating, top,
+                                               "Live sync: GitHub & LeetCode")
+    elif not os.path.exists("assets/telemetry.svg"):
+        raise RuntimeError("LeetCode unavailable and no previous telemetry card exists")
+    for name, content in out.items():
+        with open(os.path.join("assets", name), "w", encoding="utf-8") as f:
+            f.write(content)
 
-    readme = build_readme(
-        gh_base, total_commits, current_streak, longest_streak,
-        lc_total, lc_easy, lc_med, lc_hard, langs
-    )
+    with open("README.md", "w", encoding="utf-8") as f:
+        f.write(build_readme(base["pullRequests"]["totalCount"], base["issues"]["totalCount"], updated))
+    print(f"commits={commits} streak={cur}/{longest} langs={langs} lc={lc} rating={rating} top={top}")
 
-    with open("README.md", "w") as f:
-        f.write(readme)
-
-    print("\n✅ README.md updated successfully!")
 
 if __name__ == "__main__":
     main()
