@@ -155,7 +155,7 @@ def leetcode_card(x, w, h, lc, rating, top_pct):
     s += rect(x + w - 24 - 84, 20, 84, 20, "#1f3a36", 2) + t(x + w - 32, 34, f"{total}+ Solved", 11, GREEN, anchor="end", weight=500)
     s += t(x + 24, 84, str(rating), 36, TEXT, SANS, 700) + t(x + 24 + len(str(rating)) * 22 + 10, 84, "Max Contest Rating", 11, MUTED)
     tot = max(e + m + hd, 1)
-    for i, (n, v, c) in enumerate([("Easy", e, CYAN), ("Medium", m, GREEN), ("Hard", hd, PURPLE)]):
+    for i, (n, v, c) in enumerate([] if e + m + hd == 0 else [("Easy", e, CYAN), ("Medium", m, GREEN), ("Hard", hd, PURPLE)]):
         y = 112 + i * 30
         s += t(x + 24, y, n, 11, BODY) + t(x + w - 24, y, f"{v}", 11, c, weight=500, anchor="end")
         s += rect(x + 24, y + 6, w - 48, 6, CARD2, 3) + rect(x + 24, y + 6, max((w - 48) * v / tot, 2), 6, c, 3)

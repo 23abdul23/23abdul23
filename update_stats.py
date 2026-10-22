@@ -1,3 +1,4 @@
+import json
 import os
 import requests
 from datetime import datetime, timezone, timedelta
@@ -112,36 +113,73 @@ def calc_languages(user):
 
 # ── LeetCode ──────────────────────────────────────────────────────────────────
 
-LC_QUERY = """
+LC_CACHE = "assets/leetcode.json"
+# Last known good values, used until the first successful live fetch
+LC_DEFAULT = {"total": 390, "easy": 0, "medium": 0, "hard": 0, "rating": 1585, "top": None}
+
+LC_STATS_Q = """
 query($username: String!) {
   matchedUser(username: $username) {
     submitStatsGlobal { acSubmissionNum { difficulty count } }
   }
+}
+"""
+LC_CONTEST_Q = """
+query($username: String!) {
   userContestRanking(username: $username) { rating topPercentage }
   userContestRankingHistory(username: $username) { attended rating }
 }
 """
 
 
-def fetch_leetcode():
+def lc_post(query):
     r = requests.post(
         "https://leetcode.com/graphql",
-        json={"query": LC_QUERY, "variables": {"username": LEETCODE_USERNAME}},
-        headers={"Content-Type": "application/json", "Referer": "https://leetcode.com"},
-        timeout=15,
+        json={"query": query, "variables": {"username": LEETCODE_USERNAME}},
+        headers={
+            "Content-Type": "application/json",
+            "Referer": f"https://leetcode.com/u/{LEETCODE_USERNAME}/",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36",
+        },
+        timeout=20,
     )
     r.raise_for_status()
-    data = r.json()["data"]
-    counts = {s["difficulty"]: s["count"] for s in data["matchedUser"]["submitStatsGlobal"]["acSubmissionNum"]}
-    hist = [h["rating"] for h in (data.get("userContestRankingHistory") or []) if h.get("attended")]
-    ranking = data.get("userContestRanking") or {}
-    max_rating = int(max(hist)) if hist else int(ranking.get("rating") or 0)
-    top = ranking.get("topPercentage")
-    return (
-        (counts.get("All", 0), counts.get("Easy", 0), counts.get("Medium", 0), counts.get("Hard", 0)),
-        max_rating,
-        round(top) if top else None,
-    )
+    return r.json().get("data") or {}
+
+
+def load_lc_cache():
+    try:
+        with open(LC_CACHE, encoding="utf-8") as f:
+            return {**LC_DEFAULT, **json.load(f)}
+    except Exception:
+        return dict(LC_DEFAULT)
+
+
+def fetch_leetcode():
+    """Each part is fetched on its own; anything that fails keeps its cached value."""
+    lc = load_lc_cache()
+    try:
+        m = lc_post(LC_STATS_Q).get("matchedUser")
+        counts = {x["difficulty"]: x["count"] for x in m["submitStatsGlobal"]["acSubmissionNum"]}
+        lc.update(total=counts.get("All", lc["total"]), easy=counts.get("Easy", 0),
+                  medium=counts.get("Medium", 0), hard=counts.get("Hard", 0))
+    except Exception as e:
+        print(f"LeetCode solved-count fetch failed ({e}); using cached values")
+    try:
+        d = lc_post(LC_CONTEST_Q)
+        hist = [h["rating"] for h in (d.get("userContestRankingHistory") or []) if h.get("attended")]
+        rk = d.get("userContestRanking") or {}
+        if hist:
+            lc["rating"] = int(max(hist))
+        elif rk.get("rating"):
+            lc["rating"] = int(rk["rating"])
+        if rk.get("topPercentage"):
+            lc["top"] = round(rk["topPercentage"])
+    except Exception as e:
+        print(f"LeetCode contest fetch failed ({e}); using cached values")
+    with open(LC_CACHE, "w", encoding="utf-8") as f:
+        json.dump(lc, f)
+    return lc
 
 
 # ── Static profile content (from the Figma design) ────────────────────────────
@@ -240,11 +278,7 @@ def main():
     commits, days = fetch_all_years(base["createdAt"])
     cur, longest = calc_streak(days)
     langs = calc_languages(base)
-    try:
-        lc, rating, top = fetch_leetcode()
-    except Exception as e:
-        print(f"LeetCode fetch failed ({e}); keeping previous LeetCode card")
-        lc, rating, top = None, None, None
+    lc = fetch_leetcode()
 
     now = datetime.now(timezone.utc)
     updated = now.strftime("%d %b %Y, %H:%M UTC")
@@ -255,20 +289,18 @@ def main():
         "focus.svg": cards.focus(f"ACTIVE · {now.strftime('%b %Y').upper()}", INTERN, AEGIS),
         "arch.svg": cards.arch(ARCH),
         "skills.svg": cards.skills(SKILLS),
+        "achievements.svg": cards.achievements(achievements(lc["total"])),
+        "telemetry.svg": cards.telemetry(days, commits, cur, longest, langs,
+                                         (lc["total"], lc["easy"], lc["medium"], lc["hard"]),
+                                         lc["rating"], lc["top"], "Live sync: GitHub & LeetCode"),
     }
-    out["achievements.svg"] = cards.achievements(achievements(lc[0] if lc else 0))
-    if lc:
-        out["telemetry.svg"] = cards.telemetry(days, commits, cur, longest, langs, lc, rating, top,
-                                               "Live sync: GitHub & LeetCode")
-    elif not os.path.exists("assets/telemetry.svg"):
-        raise RuntimeError("LeetCode unavailable and no previous telemetry card exists")
     for name, content in out.items():
         with open(os.path.join("assets", name), "w", encoding="utf-8") as f:
             f.write(content)
 
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(build_readme(base["pullRequests"]["totalCount"], base["issues"]["totalCount"], updated))
-    print(f"commits={commits} streak={cur}/{longest} langs={langs} lc={lc} rating={rating} top={top}")
+    print(f"commits={commits} streak={cur}/{longest} langs={langs} lc={lc}")
 
 
 if __name__ == "__main__":
