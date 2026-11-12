@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="koi/koi.gif" width="256" alt="My koi" />
+
 ![Hero](assets/hero.svg)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0e1420?style=flat&logo=linkedin&logoColor=4cd7f6)](https://linkedin.com/in/abdulazeemansari)
